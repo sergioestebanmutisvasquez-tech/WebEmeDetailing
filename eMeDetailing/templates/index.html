@@ -1,0 +1,391 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eme Detailing</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+
+            <img src="{% static 'img/logo.jpeg' %}" class="logo" alt="Logo Eme Detailing">
+
+            <div class="ms-auto">
+                <a href="https://wa.me/56959863089" class="btn btn-wsp" target="_blank">
+                    Reservar
+                </a>
+            </div>
+
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1 class="display-3 titulo">Eme Detailing</h1>
+
+            <p>¡Cero filas, solo brillo!</p>
+
+            <p>📍 Servicio a domicilio en Maipú y alrededores</p>
+
+            <a href="#precios" class="btn btn-custom mt-3">
+                Ver servicios
+            </a>
+        </div>
+    </header>
+
+    <main class="container my-5">
+
+        <section id="precios">
+
+            <h2 class="text-center titulo-secundario mb-5">
+                Servicios
+            </h2>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <article class="card p-3 mb-3">
+
+                        <h3>Express</h3>
+
+                        <p class="precio">
+                            Citycar: $13.000<br>
+                            Sedan: $16.000<br>
+                            SUV: $19.000
+                        </p>
+
+                        <ul class="detalle">
+                            <li>Aspirado</li>
+                            <li>Lavado</li>
+                            <li>Vidrios</li>
+                            <li>Ruedas</li>
+                            <li>Gomas</li>
+                        </ul>
+
+                        <button
+                            class="btn btn-custom mt-auto btn-servicio"
+                            data-servicio="Express"
+                            data-citycar="13000"
+                            data-sedan="16000"
+                            data-suv="19000"
+                        >
+                            Seleccionar servicio
+                        </button>
+
+                    </article>
+                </div>
+
+                <div class="col-md-4">
+                    <article class="card p-3 mb-3">
+
+                        <h3>Full</h3>
+
+                        <p class="precio">
+                            Citycar: $19.000<br>
+                            Sedan: $24.000<br>
+                            SUV: $29.000
+                        </p>
+
+                        <ul class="detalle">
+                            <li>Express + Puertas</li>
+                            <li>Cera</li>
+                        </ul>
+
+                        <button
+                            class="btn btn-custom mt-auto btn-servicio"
+                            data-servicio="Full"
+                            data-citycar="19000"
+                            data-sedan="24000"
+                            data-suv="29000"
+                        >
+                            Seleccionar servicio
+                        </button>
+
+                    </article>
+                </div>
+
+                <div class="col-md-4">
+                    <article class="card p-3 mb-3">
+
+                        <h3>Full Detallado</h3>
+
+                        <p class="precio">
+                            Citycar: $29.000<br>
+                            Sedan: $34.000<br>
+                            SUV: $39.000
+                        </p>
+
+                        <ul class="detalle">
+                            <li>Detallado profundo</li>
+                            <li>Meguiar’s</li>
+                        </ul>
+
+                        <button
+                            class="btn btn-custom mt-auto btn-servicio"
+                            data-servicio="Full Detallado"
+                            data-citycar="29000"
+                            data-sedan="34000"
+                            data-suv="39000"
+                        >
+                            Seleccionar servicio
+                        </button>
+
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="galeria" class="mt-5">
+
+            <h2 class="text-center titulo-secundario mb-5">
+                Galería
+            </h2>
+
+            <div class="galeria-contenedor">
+
+                <button class="galeria-flecha flecha-izquierda" id="flechaIzquierda" aria-label="Mover galería hacia la izquierda">
+                    &#10094;
+                </button>
+
+                <div class="galeria-scroll" id="galeriaScroll">
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/1.jpg' %}" class="galeria-img" alt="Trabajo detailing 1">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/2.jpg' %}" class="galeria-img" alt="Trabajo detailing 2">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/3.jpg' %}" class="galeria-img" alt="Trabajo detailing 3">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/4.jpg' %}" class="galeria-img" alt="Trabajo detailing 4">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/5.jpg' %}" class="galeria-img" alt="Trabajo detailing 5">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/6.jpg' %}" class="galeria-img" alt="Trabajo detailing 6">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/7.jpg' %}" class="galeria-img" alt="Trabajo detailing 7">
+                    </div>
+
+                    <div class="galeria-item">
+                        <img src="{% static 'img/8.jpg' %}" class="galeria-img" alt="Trabajo detailing 8">
+                    </div>
+
+                </div>
+
+                <button class="galeria-flecha flecha-derecha" id="flechaDerecha" aria-label="Mover galería hacia la derecha">
+                    &#10095;
+                </button>
+
+            </div>
+        </section>
+
+        <section id="reserva" class="mt-5">
+
+            <h2 class="text-center titulo-secundario mb-4">
+                Reserva tu hora
+            </h2>
+
+            <div class="carrito-box mb-4">
+
+                <h3>Servicio seleccionado</h3>
+
+                <p id="carritoServicio">
+                    Aún no has seleccionado un servicio.
+                </p>
+
+                <p id="carritoTotal"></p>
+
+            </div>
+
+            <form id="reservaForm" class="p-4 border rounded"
+                        method="POST" enctype="multipart/form-data">
+                             {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label for ="nombre">Nombre</label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            class="form-control"
+                            required
+                            minlength="3"
+                            maxlength="50"
+                            placeholder="Ingresa tu nombre"
+                        >
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control"
+                            required
+                            maxlength="50"
+                            placeholder="ejemplo@email.com"
+                        >
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="telefono">Teléfono </label>
+                        <input
+                            type="tel"
+                            id="telefono"
+                            name="telefono"
+                            class="form-control"
+                            required
+                            minlength="8"
+                            maxlength="9"
+                            placeholder="Ej: 912345678"
+                        >
+                        {{ form.telefono.errors }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="vehiculo">Vehículo</label>
+                        <select id="vehiculo" name="vehiculo" class="form-control" required>
+                            <option value="">Seleccione una opción</option>
+                            <option value="Citycar">Citycar</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="fotoVehiculo">Fotografía del vehículo</label>
+
+                        <input
+                            type="file"
+                            id="fotoVehiculo"
+                            name="fotoVehiculo"
+                            class="form-control"
+                            accept=".jpg,.jpeg,.png"
+                            >
+
+                        <button
+                            type="button"
+                            id="quitarImagen"
+                            class="btn btn-outline-danger mt-2"
+                            style="display:none;"
+                        >
+                            Quitar imagen
+                        </button>
+{{ form.fotoVehiculo.errors }}
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label for="reservaDireccion">Dirección del cliente</label>
+                        <input
+                            type="text"
+                            id="direccion"
+                            name="direccion"
+                            class="form-control"
+                            required
+                            minlength="8"
+                            maxlength="60"
+                            placeholder="Ej: Avenida Siempre Viva 123, Maipú"
+                        >
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="fechaReserva">Día de reserva</label>
+                        <input
+                            type="date"
+                            id="fechaReserva"
+                            name="fechaReserva"
+                            class="form-control"
+                            required
+                       >
+                        {{ form.fechaReserva.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="horaReserva">Hora de reserva</label>
+                        <input
+                            type="time"
+                            id="horaReserva"
+                            name="horaReserva"
+                            class="form-control"
+                            required
+                            min="09:00"
+                            max="19:00"
+                        >
+                        {{ form.horaReserva.errors }}
+                    </div>
+
+                </div>
+                <input type="hidden" id="servicioReserva" name="servicio">
+                
+{% if form.non_field_errors %}
+    <div class="alert alert-danger mt-3" role="alert">
+        <strong>No podemos confirmar tu reserva</strong>
+
+        <p class="mb-2">
+            El horario seleccionado no está disponible.
+        </p>
+
+        <ul class="mb-0">
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+                <button type="submit" class="btn btn-custom mt-3">
+                    Confirmar reserva
+                </button>
+
+                <p id="mensajeReserva" class="mt-3 mensaje-exito" aria-live="polite"></p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+
+        <div class="container text-center">
+
+            <address>
+                Maipú, Santiago de Chile
+            </address>
+
+            <p>© 2026 Eme Detailing</p>
+
+        </div>
+
+    </footer>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Variables de entorno y configuración local
+.env
+.env.*
+!.env.example
+local_settings.py
+
+# Bases de datos SQLite
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Archivos subidos y estáticos recopilados
+media/
+staticfiles/
+
+# Registros
+*.log
+
+# Configuración local de editores
+.vscode/
+.idea/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+Desktop.ini

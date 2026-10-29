@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar reserva - Eme Detailing</title>
+</head>
+<body>
+
+    <h1>Eliminar reserva</h1>
+
+    <p>¿Estás seguro de eliminar esta reserva?</p>
+
+    <p><strong>Cliente:</strong> {{ ingreso.nombre }}</p>
+    <p><strong>Servicio:</strong> {{ ingreso.servicio }}</p>
+    <p><strong>Fecha:</strong> {{ ingreso.fechaReserva }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Confirmar eliminación</button>
+    </form>
+
+    <a href="/ingresos/">Cancelar y volver</a>
+
+</body>
+</html>

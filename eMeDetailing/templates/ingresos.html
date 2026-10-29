@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reservas - Eme Detailing</title>
+</head>
+<body>
+
+    <h1>Listado de reservas</h1>
+
+    <h3>Total de reservas: {{ totalReservas }}</h3>
+
+    <a href="/agregar/">Agregar reserva</a>
+
+    <hr>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Servicio</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Vehículo</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingreso in ingresos %}
+            <tr>
+                <td>{{ ingreso.id }}</td>
+                <td>{{ ingreso.servicio }}</td>
+                <td>{{ ingreso.nombre }}</td>
+                <td>{{ ingreso.telefono }}</td>
+                <td>{{ ingreso.vehiculo }}</td>
+                <td>{{ ingreso.fechaReserva }}</td>
+                <td>{{ ingreso.horaReserva }}</td>
+                <td>
+                    <a href="/actualizar/{{ ingreso.id }}">
+                        Editar
+                    </a>
+                    <a href="/eliminar/{{ ingreso.id }}">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">
+                    No hay reservas registradas.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
