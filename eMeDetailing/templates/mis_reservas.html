@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Reservas - Eme Detailing</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a href="/" class="navbar-brand p-0">
+                <img src="{% static 'img/logo.jpeg' %}" class="logo" alt="Logo Eme Detailing">
+            </a>
+
+            <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+                <span class="user-greeting me-2 d-none d-md-inline">
+                    👋 Hola, <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+                </span>
+
+                <a href="/" class="btn btn-outline-info btn-sm">
+                    + Nueva Reserva
+                </a>
+
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notificaciones del Sistema -->
+    {% if messages %}
+        <div class="container mt-4">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="container my-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 border-bottom pb-3">
+            <div>
+                <h1 class="titulo-secundario mb-1">Historial de Mis Reservas</h1>
+                <p class="text-secondary mb-0">Consulta el estado de tus solicitudes de detailing</p>
+            </div>
+            <a href="/" class="btn btn-custom">
+                Agendar otra hora
+            </a>
+        </div>
+
+        {% if reservas %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle border text-center" style="border-color: var(--celeste);">
+                    <thead style="background-color: #1a1a24; color: var(--celeste);">
+                        <tr>
+                            <th># N°</th>
+                            <th>Servicio</th>
+                            <th>Vehículo</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reserva in reservas %}
+                            <tr>
+                                <td class="fw-bold">#{{ reserva.id }}</td>
+                                <td>
+                                    <span class="badge bg-dark border border-info text-info px-2 py-1">
+                                        {{ reserva.servicio }}
+                                    </span>
+                                </td>
+                                <td>{{ reserva.vehiculo }}</td>
+                                <td>{{ reserva.fechaReserva|date:"d/m/Y" }}</td>
+                                <td>{{ reserva.horaReserva|time:"H:i" }} hrs</td>
+                                <td class="text-start small" style="max-width: 220px;">
+                                    {{ reserva.direccion }}
+                                </td>
+                                <td>
+                                    {% if reserva.estado == 'Pendiente' %}
+                                        <span class="badge bg-warning text-dark px-2 py-1">Pendiente</span>
+                                    {% elif reserva.estado == 'Confirmada' %}
+                                        <span class="badge bg-info text-dark px-2 py-1">Confirmada</span>
+                                    {% elif reserva.estado == 'Realizada' %}
+                                        <span class="badge bg-success text-white px-2 py-1">Realizada</span>
+                                    {% elif reserva.estado == 'Cancelada' %}
+                                        <span class="badge bg-danger text-white px-2 py-1">Cancelada</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if reserva.estado == 'Pendiente' %}
+                                        <a
+                                            href="{% url 'cancelar_reserva' reserva.id %}"
+                                            class="btn btn-outline-danger btn-sm"
+                                            onclick="return confirm('¿Estás seguro de que deseas cancelar la reserva #{{ reserva.id }}?');"
+                                        >
+                                            Cancelar
+                                        </a>
+                                    {% else %}
+                                        <span class="text-secondary small">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="card p-5 text-center mx-auto reserva-bloqueada-card my-5">
+                <div class="icono-candado mb-3" style="filter:none;">📅</div>
+                <h3 class="titulo-secundario mb-3">Aún no tienes reservas registradas</h3>
+                <p class="text-light mb-4">
+                    Selecciona uno de nuestros servicios y agenda tu hora en pocos minutos con atención a domicilio.
+                </p>
+                <div>
+                    <a href="/" class="btn btn-custom px-4 py-2">
+                        Ir al Catálogo de Servicios
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <address>Maipú, Santiago de Chile</address>
+            <p>© 2026 Eme Detailing</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

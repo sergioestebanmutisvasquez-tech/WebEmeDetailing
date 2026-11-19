@@ -384,3 +384,109 @@ address {
         padding: 15px;
     }
 }
+
+
+/* ========== AUTENTICACIÓN Y BLOQUEO DE RESERVAS ========== */
+
+.auth-wrapper {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 15px;
+}
+
+.auth-card {
+    background-color: #111;
+    border: 1px solid var(--celeste);
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(76, 201, 240, 0.25);
+    width: 100%;
+    max-width: 580px;
+    overflow: hidden;
+}
+
+.auth-tabs {
+    border-bottom: 1px solid #333;
+    background-color: #181818;
+}
+
+.auth-tabs .nav-link {
+    color: #aaa;
+    font-family: 'Bangers', cursive;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 14px 20px;
+    transition: all 0.3s ease;
+    border-radius: 0;
+}
+
+.auth-tabs .nav-link:hover {
+    color: var(--celeste);
+    border-color: rgba(76, 201, 240, 0.4);
+}
+
+.auth-tabs .nav-link.active {
+    background-color: transparent;
+    color: var(--celeste);
+    border-bottom: 3px solid var(--celeste);
+    text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+}
+
+.requisitos-password {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+}
+
+.requisitos-password ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.requisitos-password li {
+    color: #888;
+    transition: color 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.requisitos-password li.cumplido {
+    color: #25D366;
+    font-weight: 500;
+}
+
+.requisitos-password li.cumplido::before {
+    content: "✓";
+    font-weight: bold;
+}
+
+.requisitos-password li:not(.cumplido)::before {
+    content: "•";
+    color: #666;
+}
+
+.reserva-bloqueada-card {
+    background: radial-gradient(circle at top, #1c1c28 0%, #0d0d12 100%);
+    border: 1px solid var(--celeste);
+    border-radius: 18px;
+    box-shadow: 0 0 25px rgba(76, 201, 240, 0.2);
+    max-width: 680px;
+}
+
+.icono-candado {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 12px var(--celeste));
+}
+
+.user-greeting {
+    color: var(--celeste);
+    font-size: 0.95rem;
+    font-weight: 500;
+}

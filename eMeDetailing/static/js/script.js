@@ -51,8 +51,6 @@ function validarTelefono(telefono) {
     return regex.test(telefono);
 }
 
-
-
 function validarFechaReserva(fecha) {
     const fechaSeleccionada = new Date(fecha + "T00:00:00");
     const hoy = new Date();
@@ -93,41 +91,42 @@ function seleccionarServicio(boton) {
 
     actualizarCarrito();
 
-    document.getElementById("reserva").scrollIntoView({
-        behavior: "smooth"
-    });
+    const seccionReserva = document.getElementById("reserva");
+    if (seccionReserva) {
+        seccionReserva.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
 }
-
 
 function actualizarCarrito() {
     const carritoServicio = document.getElementById("carritoServicio");
     const carritoTotal = document.getElementById("carritoTotal");
-    const vehiculo = document.getElementById("vehiculo").value;
+    const vehiculoEl = document.getElementById("vehiculo");
     const campoServicio = document.getElementById("servicioReserva");
 
-    if (!servicioSeleccionado) {
-        carritoServicio.textContent =
-            "Aún no has seleccionado un servicio.";
+    if (!carritoServicio || !campoServicio) {
+        return; // Formulario no presente en el DOM (usuario no autenticado)
+    }
 
+    const vehiculo = vehiculoEl ? vehiculoEl.value : "";
+
+    if (!servicioSeleccionado) {
+        carritoServicio.textContent = "Aún no has seleccionado un servicio.";
         carritoTotal.textContent = "";
         campoServicio.value = "";
         return;
     }
 
     campoServicio.value = servicioSeleccionado.nombre;
-
-    carritoServicio.textContent =
-        `Servicio: ${servicioSeleccionado.nombre}`;
+    carritoServicio.textContent = `Servicio: ${servicioSeleccionado.nombre}`;
 
     if (vehiculo && servicioSeleccionado.precios[vehiculo]) {
-        carritoTotal.textContent =
-            `Total: ${formatearPrecio(servicioSeleccionado.precios[vehiculo])}`;
+        carritoTotal.textContent = `Total: ${formatearPrecio(servicioSeleccionado.precios[vehiculo])}`;
     } else {
-        carritoTotal.textContent =
-            "Selecciona el tipo de vehículo para calcular el total.";
+        carritoTotal.textContent = "Selecciona el tipo de vehículo para calcular el total.";
     }
 }
-
 
 function validarFormularioReserva(datos) {
     if (!servicioSeleccionado) {
@@ -171,7 +170,7 @@ function validarFormularioReserva(datos) {
     }
 
     if (datos.direccion.length < 8 || datos.direccion.length > 60) {
-        return "La dirección debe tener entre 8 y  60 caracteres";
+        return "La dirección debe tener entre 8 y 60 caracteres";
     }
 
     if (!validarFechaReserva(datos.fecha)) {
@@ -187,34 +186,48 @@ function validarFormularioReserva(datos) {
 
 function mostrarMensajeReserva() {
     const mensajeReserva = document.getElementById("mensajeReserva");
-
-    mensajeReserva.textContent =
-        "Se abrirá WhatsApp para solicitar tu reserva. Aún no se guarda en la base de datos.";
+    if (mensajeReserva) {
+        mensajeReserva.textContent =
+            "Se abrirá WhatsApp para solicitar tu reserva. Aún no se guarda en la base de datos.";
+    }
 }
 
 function limpiarMensajeReserva() {
     const mensajeReserva = document.getElementById("mensajeReserva");
-    mensajeReserva.textContent = "";
+    if (mensajeReserva) {
+        mensajeReserva.textContent = "";
+    }
 }
-
 
 function enviarReserva(evento) {
     limpiarMensajeReserva();
 
     if (!servicioSeleccionado) {
         evento.preventDefault();
-        alert("Debes seleccionar un servicio.");
+        alert("Debes seleccionar un servicio antes de confirmar la reserva.");
+        return;
+    }
+
+    const campoNombre = document.getElementById("nombre");
+    const campoEmail = document.getElementById("email");
+    const campoTelefono = document.getElementById("telefono");
+    const campoVehiculo = document.getElementById("vehiculo");
+    const campoDireccion = document.getElementById("direccion");
+    const campoFecha = document.getElementById("fechaReserva");
+    const campoHora = document.getElementById("horaReserva");
+
+    if (!campoNombre || !campoEmail || !campoTelefono || !campoVehiculo || !campoDireccion || !campoFecha || !campoHora) {
         return;
     }
 
     const datos = {
-        nombre: document.getElementById("nombre").value,
-        email: document.getElementById("email").value,
-        telefono: document.getElementById("telefono").value,
-        vehiculo: document.getElementById("vehiculo").value,
-        direccion: document.getElementById("direccion").value,
-        fecha: document.getElementById("fechaReserva").value,
-        hora: document.getElementById("horaReserva").value
+        nombre: campoNombre.value,
+        email: campoEmail.value,
+        telefono: campoTelefono.value,
+        vehiculo: campoVehiculo.value,
+        direccion: campoDireccion.value,
+        fecha: campoFecha.value,
+        hora: campoHora.value
     };
 
     const error = validarFormularioReserva(datos);
@@ -225,8 +238,10 @@ function enviarReserva(evento) {
         return;
     }
 
-    document.getElementById("servicioReserva").value =
-        servicioSeleccionado.nombre;
+    const campoServicio = document.getElementById("servicioReserva");
+    if (campoServicio) {
+        campoServicio.value = servicioSeleccionado.nombre;
+    }
 }
 
 // ======================================================
@@ -238,19 +253,21 @@ function activarGaleria() {
     const flechaIzquierda = document.getElementById("flechaIzquierda");
     const flechaDerecha = document.getElementById("flechaDerecha");
 
-    flechaIzquierda.addEventListener("click", () => {
-        galeriaScroll.scrollBy({
-            left: -300,
-            behavior: "smooth"
+    if (galeriaScroll && flechaIzquierda && flechaDerecha) {
+        flechaIzquierda.addEventListener("click", () => {
+            galeriaScroll.scrollBy({
+                left: -300,
+                behavior: "smooth"
+            });
         });
-    });
 
-    flechaDerecha.addEventListener("click", () => {
-        galeriaScroll.scrollBy({
-            left: 300,
-            behavior: "smooth"
+        flechaDerecha.addEventListener("click", () => {
+            galeriaScroll.scrollBy({
+                left: 300,
+                behavior: "smooth"
+            });
         });
-    });
+    }
 }
 
 // ======================================================
@@ -258,17 +275,20 @@ function activarGaleria() {
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    const campoServicio = document.getElementById("servicioReserva");
+    if (campoServicio) {
+        campoServicio.value = servicioSeleccionado ? servicioSeleccionado.nombre : "";
+    }
 
-    document.getElementById("servicioReserva").value =
-    servicioSeleccionado ? servicioSeleccionado.nombre : "";
-    
-    document
-        .getElementById("reservaForm")
-        .addEventListener("submit", enviarReserva);
+    const reservaForm = document.getElementById("reservaForm");
+    if (reservaForm) {
+        reservaForm.addEventListener("submit", enviarReserva);
+    }
 
-    document
-        .getElementById("vehiculo")
-        .addEventListener("change", actualizarCarrito);
+    const vehiculoSelect = document.getElementById("vehiculo");
+    if (vehiculoSelect) {
+        vehiculoSelect.addEventListener("change", actualizarCarrito);
+    }
 
     document.querySelectorAll(".btn-servicio").forEach((boton) => {
         boton.addEventListener("click", () => {
@@ -277,22 +297,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     activarGaleria();
+
+    const fotoVehiculo = document.getElementById("fotoVehiculo");
+    const quitarImagen = document.getElementById("quitarImagen");
+
+    if (fotoVehiculo && quitarImagen) {
+        fotoVehiculo.addEventListener("change", function () {
+            quitarImagen.style.display = this.files.length > 0
+                ? "inline-block"
+                : "none";
+        });
+
+        quitarImagen.addEventListener("click", function () {
+            fotoVehiculo.value = "";
+            quitarImagen.style.display = "none";
+        });
+    }
 });
-
-
-const fotoVehiculo = document.getElementById("fotoVehiculo");
-const quitarImagen = document.getElementById("quitarImagen");
-
-if (fotoVehiculo && quitarImagen) {
-    fotoVehiculo.addEventListener("change", function () {
-        quitarImagen.style.display = this.files.length > 0
-            ? "inline-block"
-            : "none";
-    });
-
-    quitarImagen.addEventListener("click", function () {
-        fotoVehiculo.value = "";
-        quitarImagen.style.display = "none";
-    });
-}
-

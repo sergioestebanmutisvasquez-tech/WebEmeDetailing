@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eme Detailing</title>
+    <title>Eme Detailing - Cero filas, solo brillo</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
@@ -14,19 +14,55 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
 
-            <img src="{% static 'img/logo.jpeg' %}" class="logo" alt="Logo Eme Detailing">
+            <a href="/" class="navbar-brand p-0">
+                <img src="{% static 'img/logo.jpeg' %}" class="logo" alt="Logo Eme Detailing">
+            </a>
 
-            <div class="ms-auto">
-                <a href="https://wa.me/56959863089" class="btn btn-wsp" target="_blank">
-                    Reservar
+            <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+                {% if request.user.is_authenticated %}
+                    <span class="user-greeting me-2 d-none d-md-inline">
+                        👋 Hola, <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+                    </span>
+
+                    <a href="{% url 'mis_reservas' %}" class="btn btn-outline-info btn-sm">
+                        Mis Reservas
+                    </a>
+
+                    <a href="#reserva" class="btn btn-custom btn-sm">
+                        Reservar
+                    </a>
+
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">
+                        Cerrar Sesión
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-custom btn-sm">
+                        Ingresar / Registrarse
+                    </a>
+                {% endif %}
+
+                <a href="https://wa.me/56959863089" class="btn btn-wsp btn-sm" target="_blank">
+                    WhatsApp
                 </a>
             </div>
 
         </div>
     </nav>
+
+    <!-- Notificaciones del Sistema (Django Messages) -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <header>
         <div class="container">
@@ -36,14 +72,27 @@
 
             <p>📍 Servicio a domicilio en Maipú y alrededores</p>
 
-            <a href="#precios" class="btn btn-custom mt-3">
-                Ver servicios
-            </a>
+            <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
+                <a href="#precios" class="btn btn-custom">
+                    Ver servicios
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <a href="#reserva" class="btn btn-outline-info">
+                        Ir a Reservar
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-info">
+                        Ingresar / Crear cuenta
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </header>
 
     <main class="container my-5">
 
+        <!-- SECCIÓN PRECIOS / SERVICIOS -->
         <section id="precios">
 
             <h2 class="text-center titulo-secundario mb-5">
@@ -145,6 +194,7 @@
             </div>
         </section>
 
+        <!-- SECCIÓN GALERÍA -->
         <section id="galeria" class="mt-5">
 
             <h2 class="text-center titulo-secundario mb-5">
@@ -200,174 +250,215 @@
             </div>
         </section>
 
-        <section id="reserva" class="mt-5">
+        <!-- SECCIÓN RESERVA: VISIBLE Y ACCESIBLE ÚNICAMENTE SI ESTÁ AUTENTICADO -->
+        {% if request.user.is_authenticated %}
+            <section id="reserva" class="mt-5">
 
-            <h2 class="text-center titulo-secundario mb-4">
-                Reserva tu hora
-            </h2>
+                <h2 class="text-center titulo-secundario mb-4">
+                    Reserva tu hora
+                </h2>
 
-            <div class="carrito-box mb-4">
+                <div class="carrito-box mb-4">
 
-                <h3>Servicio seleccionado</h3>
+                    <h3>Servicio seleccionado</h3>
 
-                <p id="carritoServicio">
-                    Aún no has seleccionado un servicio.
-                </p>
+                    <p id="carritoServicio">
+                        Aún no has seleccionado un servicio.
+                    </p>
 
-                <p id="carritoTotal"></p>
-
-            </div>
-
-            <form id="reservaForm" class="p-4 border rounded"
-                        method="POST" enctype="multipart/form-data">
-                             {% csrf_token %}
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-                        <label for ="nombre">Nombre</label>
-                        <input
-                            type="text"
-                            id="nombre"
-                            name="nombre"
-                            class="form-control"
-                            required
-                            minlength="3"
-                            maxlength="50"
-                            placeholder="Ingresa tu nombre"
-                        >
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="form-control"
-                            required
-                            maxlength="50"
-                            placeholder="ejemplo@email.com"
-                        >
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="telefono">Teléfono </label>
-                        <input
-                            type="tel"
-                            id="telefono"
-                            name="telefono"
-                            class="form-control"
-                            required
-                            minlength="8"
-                            maxlength="9"
-                            placeholder="Ej: 912345678"
-                        >
-                        {{ form.telefono.errors }}
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="vehiculo">Vehículo</label>
-                        <select id="vehiculo" name="vehiculo" class="form-control" required>
-                            <option value="">Seleccione una opción</option>
-                            <option value="Citycar">Citycar</option>
-                            <option value="Sedan">Sedan</option>
-                            <option value="SUV">SUV</option>
-                        </select>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="fotoVehiculo">Fotografía del vehículo</label>
-
-                        <input
-                            type="file"
-                            id="fotoVehiculo"
-                            name="fotoVehiculo"
-                            class="form-control"
-                            accept=".jpg,.jpeg,.png"
-                            >
-
-                        <button
-                            type="button"
-                            id="quitarImagen"
-                            class="btn btn-outline-danger mt-2"
-                            style="display:none;"
-                        >
-                            Quitar imagen
-                        </button>
-{{ form.fotoVehiculo.errors }}
-                    </div>
-
-                    <div class="col-md-12 mb-3">
-                        <label for="reservaDireccion">Dirección del cliente</label>
-                        <input
-                            type="text"
-                            id="direccion"
-                            name="direccion"
-                            class="form-control"
-                            required
-                            minlength="8"
-                            maxlength="60"
-                            placeholder="Ej: Avenida Siempre Viva 123, Maipú"
-                        >
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="fechaReserva">Día de reserva</label>
-                        <input
-                            type="date"
-                            id="fechaReserva"
-                            name="fechaReserva"
-                            class="form-control"
-                            required
-                       >
-                        {{ form.fechaReserva.errors }}
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="horaReserva">Hora de reserva</label>
-                        <input
-                            type="time"
-                            id="horaReserva"
-                            name="horaReserva"
-                            class="form-control"
-                            required
-                            min="09:00"
-                            max="19:00"
-                        >
-                        {{ form.horaReserva.errors }}
-                    </div>
+                    <p id="carritoTotal"></p>
 
                 </div>
-                <input type="hidden" id="servicioReserva" name="servicio">
-                
-{% if form.non_field_errors %}
-    <div class="alert alert-danger mt-3" role="alert">
-        <strong>No podemos confirmar tu reserva</strong>
 
-        <p class="mb-2">
-            El horario seleccionado no está disponible.
-        </p>
+                <form id="reservaForm" class="p-4 border rounded"
+                            method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-        <ul class="mb-0">
-            {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
+                    <div class="row">
 
-                <button type="submit" class="btn btn-custom mt-3">
-                    Confirmar reserva
-                </button>
+                        <div class="col-md-6 mb-3">
+                            <label for="nombre">Nombre</label>
+                            <input
+                                type="text"
+                                id="nombre"
+                                name="nombre"
+                                class="form-control"
+                                required
+                                minlength="3"
+                                maxlength="50"
+                                placeholder="Ingresa tu nombre"
+                                value="{{ form.initial.nombre|default:form.nombre.value|default:'' }}"
+                            >
+                            {% if form.nombre.errors %}
+                                <div class="text-danger small mt-1">{{ form.nombre.errors.0 }}</div>
+                            {% endif %}
+                        </div>
 
-                <p id="mensajeReserva" class="mt-3 mensaje-exito" aria-live="polite"></p>
+                        <div class="col-md-6 mb-3">
+                            <label for="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                required
+                                maxlength="50"
+                                placeholder="ejemplo@email.com"
+                                value="{{ form.initial.email|default:form.email.value|default:'' }}"
+                            >
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
 
-            </form>
+                        <div class="col-md-6 mb-3">
+                            <label for="telefono">Teléfono </label>
+                            <input
+                                type="tel"
+                                id="telefono"
+                                name="telefono"
+                                class="form-control"
+                                required
+                                minlength="8"
+                                maxlength="9"
+                                placeholder="Ej: 912345678"
+                                value="{{ form.initial.telefono|default:form.telefono.value|default:'' }}"
+                            >
+                            {% if form.telefono.errors %}
+                                <div class="text-danger small mt-1">{{ form.telefono.errors.0 }}</div>
+                            {% endif %}
+                        </div>
 
-        </section>
+                        <div class="col-md-6 mb-3">
+                            <label for="vehiculo">Vehículo</label>
+                            <select id="vehiculo" name="vehiculo" class="form-control" required>
+                                <option value="">Seleccione una opción</option>
+                                <option value="Citycar" {% if form.vehiculo.value == 'Citycar' %}selected{% endif %}>Citycar</option>
+                                <option value="Sedan" {% if form.vehiculo.value == 'Sedan' %}selected{% endif %}>Sedan</option>
+                                <option value="SUV" {% if form.vehiculo.value == 'SUV' %}selected{% endif %}>SUV</option>
+                            </select>
+                            {% if form.vehiculo.errors %}
+                                <div class="text-danger small mt-1">{{ form.vehiculo.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="direccion">Dirección del cliente</label>
+                            <input
+                                type="text"
+                                id="direccion"
+                                name="direccion"
+                                class="form-control"
+                                required
+                                minlength="8"
+                                maxlength="60"
+                                placeholder="Ej: Avenida Siempre Viva 123, Maipú"
+                                value="{{ form.initial.direccion|default:form.direccion.value|default:'' }}"
+                            >
+                            {% if form.direccion.errors %}
+                                <div class="text-danger small mt-1">{{ form.direccion.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="fotoVehiculo">Fotografía del vehículo (opcional)</label>
+                            <input
+                                type="file"
+                                id="fotoVehiculo"
+                                name="fotoVehiculo"
+                                class="form-control"
+                                accept=".jpg,.jpeg,.png"
+                            >
+                            <button
+                                type="button"
+                                id="quitarImagen"
+                                class="btn btn-outline-danger mt-2"
+                                style="display:none;"
+                            >
+                                Quitar imagen
+                            </button>
+                            {% if form.fotoVehiculo.errors %}
+                                <div class="text-danger small mt-1">{{ form.fotoVehiculo.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="fechaReserva">Día de reserva</label>
+                            <input
+                                type="date"
+                                id="fechaReserva"
+                                name="fechaReserva"
+                                class="form-control"
+                                required
+                                value="{{ form.fechaReserva.value|default:'' }}"
+                            >
+                            {% if form.fechaReserva.errors %}
+                                <div class="text-danger small mt-1">{{ form.fechaReserva.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="horaReserva">Hora de reserva</label>
+                            <input
+                                type="time"
+                                id="horaReserva"
+                                name="horaReserva"
+                                class="form-control"
+                                required
+                                min="09:00"
+                                max="19:00"
+                                value="{{ form.horaReserva.value|default:'' }}"
+                            >
+                            {% if form.horaReserva.errors %}
+                                <div class="text-danger small mt-1">{{ form.horaReserva.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <input type="hidden" id="servicioReserva" name="servicio" value="{{ form.servicio.value|default:'' }}">
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <strong>No podemos confirmar tu reserva</strong>
+                            <p class="mb-2">El horario seleccionado no está disponible.</p>
+                            <ul class="mb-0">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-custom mt-3">
+                        Confirmar reserva
+                    </button>
+
+                    <p id="mensajeReserva" class="mt-3 mensaje-exito" aria-live="polite"></p>
+
+                </form>
+
+            </section>
+        {% else %}
+            <!-- BLOQUE MOSTRADO CUANDO EL USUARIO NO ESTÁ AUTENTICADO -->
+            <section id="reserva" class="mt-5">
+                <div class="card p-4 p-md-5 text-center mx-auto reserva-bloqueada-card">
+                    <div class="icono-candado mb-3">🔒</div>
+                    <h2 class="titulo-secundario mb-3">¿Listo para dejar tu auto como nuevo?</h2>
+                    <p class="lead mb-4 text-light">
+                        Para ver la disponibilidad y acceder al formulario de reservas, debes <strong>iniciar sesión</strong> o <strong>crear tu cuenta de cliente</strong>.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{% url 'login' %}" class="btn btn-custom px-4 py-2">
+                            Iniciar Sesión
+                        </a>
+                        <a href="{% url 'registro' %}" class="btn btn-outline-info px-4 py-2">
+                            Crear Cuenta
+                        </a>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
 
     </main>
 
@@ -385,7 +476,8 @@
 
     </footer>
 
-<script src="{% static 'js/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 
 </body>
 </html>

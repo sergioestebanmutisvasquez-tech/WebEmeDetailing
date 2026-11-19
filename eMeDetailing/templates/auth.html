@@ -1,0 +1,399 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Clientes - Eme Detailing</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <img src="{% static 'img/logo.jpeg' %}" class="logo" alt="Logo Eme Detailing">
+            </a>
+
+            <div class="ms-auto">
+                <a href="/" class="btn btn-outline-info btn-sm">
+                    ← Volver al inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container auth-wrapper">
+        <div class="auth-card">
+
+            <!-- Mensajes Django -->
+            {% if messages %}
+                <div class="p-3 pb-0">
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show mb-2" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Pestañas de Navegación -->
+            <ul class="nav nav-tabs nav-fill auth-tabs" id="authTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button
+                        class="nav-link {% if active_tab != 'registro' %}active{% endif %}"
+                        id="tab-login-btn"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tab-login"
+                        type="button"
+                        role="tab"
+                        aria-controls="tab-login"
+                        aria-selected="{% if active_tab != 'registro' %}true{% else %}false{% endif %}"
+                    >
+                        Iniciar Sesión
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button
+                        class="nav-link {% if active_tab == 'registro' %}active{% endif %}"
+                        id="tab-registro-btn"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tab-registro"
+                        type="button"
+                        role="tab"
+                        aria-controls="tab-registro"
+                        aria-selected="{% if active_tab == 'registro' %}true{% else %}false{% endif %}"
+                    >
+                        Crear Cuenta
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4 p-md-5" id="authTabsContent">
+
+                <!-- TAB 1: INICIAR SESIÓN -->
+                <div
+                    class="tab-pane fade {% if active_tab != 'registro' %}show active{% endif %}"
+                    id="tab-login"
+                    role="tabpanel"
+                    aria-labelledby="tab-login-btn"
+                >
+                    <div class="text-center mb-4">
+                        <h2 class="titulo-secundario">Ingreso de Clientes</h2>
+                        <p class="text-secondary small">Ingresa con tu correo o usuario para reservar tu hora</p>
+                    </div>
+
+                    <form action="{% url 'login' %}" method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="id_identificador" class="form-label">Correo electrónico o Usuario</label>
+                            <input
+                                type="text"
+                                name="identificador"
+                                id="id_identificador"
+                                class="form-control"
+                                placeholder="ejemplo@email.com o usuario"
+                                required
+                                value="{{ form_login.identificador.value|default:'' }}"
+                            >
+                            {% if form_login.identificador.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form_login.identificador.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password_login" class="form-label">Contraseña</label>
+                            <input
+                                type="password"
+                                name="password"
+                                id="id_password_login"
+                                class="form-control"
+                                placeholder="Ingresa tu contraseña"
+                                required
+                            >
+                            {% if form_login.password.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form_login.password.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-custom w-100 py-2">
+                            Ingresar
+                        </button>
+
+                        <div class="text-center mt-4">
+                            <span class="text-secondary small">¿Aún no tienes cuenta?</span>
+                            <button
+                                type="button"
+                                class="btn btn-link text-info p-0 ms-1 small"
+                                onclick="document.getElementById('tab-registro-btn').click();"
+                            >
+                                Regístrate aquí
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- TAB 2: CREAR CUENTA -->
+                <div
+                    class="tab-pane fade {% if active_tab == 'registro' %}show active{% endif %}"
+                    id="tab-registro"
+                    role="tabpanel"
+                    aria-labelledby="tab-registro-btn"
+                >
+                    <div class="text-center mb-4">
+                        <h2 class="titulo-secundario">Registro de Nuevo Cliente</h2>
+                        <p class="text-secondary small">Completa tus datos para crear tu cuenta y reservar</p>
+                    </div>
+
+                    <form action="{% url 'registro' %}" method="POST" id="formRegistroCliente" novalidate>
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_nombre" class="form-label">Nombre *</label>
+                                <input
+                                    type="text"
+                                    name="nombre"
+                                    id="id_nombre"
+                                    class="form-control"
+                                    placeholder="Ej: Juan"
+                                    required
+                                    minlength="3"
+                                    maxlength="50"
+                                    value="{{ form_registro.nombre.value|default:'' }}"
+                                >
+                                {% if form_registro.nombre.errors %}
+                                    <div class="text-danger small mt-1">{{ form_registro.nombre.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_apellido" class="form-label">Apellido *</label>
+                                <input
+                                    type="text"
+                                    name="apellido"
+                                    id="id_apellido"
+                                    class="form-control"
+                                    placeholder="Ej: Pérez"
+                                    required
+                                    minlength="2"
+                                    maxlength="50"
+                                    value="{{ form_registro.apellido.value|default:'' }}"
+                                >
+                                {% if form_registro.apellido.errors %}
+                                    <div class="text-danger small mt-1">{{ form_registro.apellido.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Correo Electrónico *</label>
+                            <input
+                                type="email"
+                                name="email"
+                                id="id_email"
+                                class="form-control"
+                                placeholder="ejemplo@email.com"
+                                required
+                                maxlength="50"
+                                value="{{ form_registro.email.value|default:'' }}"
+                            >
+                            {% if form_registro.email.errors %}
+                                <div class="text-danger small mt-1">{{ form_registro.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_telefono" class="form-label">Teléfono (9 dígitos) *</label>
+                                <input
+                                    type="tel"
+                                    name="telefono"
+                                    id="id_telefono"
+                                    class="form-control"
+                                    placeholder="Ej: 912345678"
+                                    required
+                                    maxlength="9"
+                                    pattern="[0-9]{9}"
+                                    value="{{ form_registro.telefono.value|default:'' }}"
+                                >
+                                <div class="form-text text-secondary" style="font-size:0.75rem;">9 dígitos sin código de país</div>
+                                {% if form_registro.telefono.errors %}
+                                    <div class="text-danger small mt-1">{{ form_registro.telefono.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_direccion" class="form-label">Dirección *</label>
+                                <input
+                                    type="text"
+                                    name="direccion"
+                                    id="id_direccion"
+                                    class="form-control"
+                                    placeholder="Ej: Av. Las Pajaritos 1234, Maipú"
+                                    required
+                                    minlength="8"
+                                    maxlength="60"
+                                    value="{{ form_registro.direccion.value|default:'' }}"
+                                >
+                                {% if form_registro.direccion.errors %}
+                                    <div class="text-danger small mt-1">{{ form_registro.direccion.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Contraseña única *</label>
+                            <input
+                                type="password"
+                                name="password"
+                                id="id_password"
+                                class="form-control"
+                                placeholder="Crea tu contraseña segura"
+                                required
+                                minlength="8"
+                            >
+                            {% if form_registro.password.errors %}
+                                <div class="text-danger small mt-1">{{ form_registro.password.errors.0 }}</div>
+                            {% endif %}
+
+                            <!-- Indicador de Requisitos de Contraseña en Tiempo Real -->
+                            <div class="requisitos-password mt-2">
+                                <small class="d-block mb-1 text-light fw-bold">Requisitos de la contraseña:</small>
+                                <ul>
+                                    <li id="req-length">Mínimo 8 caracteres</li>
+                                    <li id="req-upper">Al menos una letra mayúscula (A-Z)</li>
+                                    <li id="req-num">Al menos un número (0-9)</li>
+                                    <li id="req-special">Al menos un carácter especial (ej: ! @ # $ % * ? . - _)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password_confirm" class="form-label">Confirmar Contraseña *</label>
+                            <input
+                                type="password"
+                                name="password_confirm"
+                                id="id_password_confirm"
+                                class="form-control"
+                                placeholder="Repite tu contraseña exactamente"
+                                required
+                            >
+                            <div id="match-feedback" class="small mt-1 text-secondary"></div>
+                            {% if form_registro.password_confirm.errors %}
+                                <div class="text-danger small mt-1">{{ form_registro.password_confirm.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" id="btnRegistro" class="btn btn-custom w-100 py-2">
+                            Crear Cuenta y Comenzar
+                        </button>
+
+                        <div class="text-center mt-4">
+                            <span class="text-secondary small">¿Ya tienes una cuenta?</span>
+                            <button
+                                type="button"
+                                class="btn btn-link text-info p-0 ms-1 small"
+                                onclick="document.getElementById('tab-login-btn').click();"
+                            >
+                                Inicia sesión aquí
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <address>Maipú, Santiago de Chile</address>
+            <p>© 2026 Eme Detailing</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validación interactiva de contraseña en tiempo real
+        const passInput = document.getElementById('id_password');
+        const passConfirmInput = document.getElementById('id_password_confirm');
+        const matchFeedback = document.getElementById('match-feedback');
+
+        const reqLength = document.getElementById('req-length');
+        const reqUpper = document.getElementById('req-upper');
+        const reqNum = document.getElementById('req-num');
+        const reqSpecial = document.getElementById('req-special');
+
+        function validarPasswordRequisitos() {
+            const val = passInput ? passInput.value : '';
+
+            // Mínimo 8 caracteres
+            if (val.length >= 8) {
+                reqLength.classList.add('cumplido');
+            } else {
+                reqLength.classList.remove('cumplido');
+            }
+
+            // Al menos una mayúscula
+            if (/[A-Z]/.test(val)) {
+                reqUpper.classList.add('cumplido');
+            } else {
+                reqUpper.classList.remove('cumplido');
+            }
+
+            // Al menos un número
+            if (/[0-9]/.test(val)) {
+                reqNum.classList.add('cumplido');
+            } else {
+                reqNum.classList.remove('cumplido');
+            }
+
+            // Al menos un caracter especial
+            if (/[^a-zA-Z0-9]/.test(val)) {
+                reqSpecial.classList.add('cumplido');
+            } else {
+                reqSpecial.classList.remove('cumplido');
+            }
+
+            validarCoincidencia();
+        }
+
+        function validarCoincidencia() {
+            if (!passConfirmInput || !passInput) return;
+            const p1 = passInput.value;
+            const p2 = passConfirmInput.value;
+
+            if (p2.length === 0) {
+                matchFeedback.textContent = '';
+                matchFeedback.className = 'small mt-1 text-secondary';
+                return;
+            }
+
+            if (p1 === p2) {
+                matchFeedback.textContent = '✓ Las contraseñas coinciden';
+                matchFeedback.className = 'small mt-1 text-success fw-bold';
+            } else {
+                matchFeedback.textContent = '✗ Las contraseñas no coinciden';
+                matchFeedback.className = 'small mt-1 text-danger';
+            }
+        }
+
+        if (passInput) {
+            passInput.addEventListener('input', validarPasswordRequisitos);
+        }
+        if (passConfirmInput) {
+            passConfirmInput.addEventListener('input', validarCoincidencia);
+        }
+    </script>
+</body>
+</html>
